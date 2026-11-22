@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="발로란트, CS2, 오버워치 2, 에이펙스 레전드 감도를 무료로 변환하세요. 배틀그라운드(PUBG) 수동 측정도 안내합니다. DPI, cm/360 계산기.">
+<meta name="theme-color" content="#0b1220">
+<title>게임 감도 변환기 | 발로란트 CS2 오버워치2 에이펙스 PUBG</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#152238;--line:#30415b;--text:#f1f5f9;--muted:#a9b8cc;--accent:#8ca6ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#0b1220,#111b2e);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+main{width:min(940px,92%);margin:42px auto}header{margin-bottom:26px}.kicker{color:#a5b9ff;font-weight:750;letter-spacing:.12em;font-size:.8rem}h1{font-size:clamp(1.85rem,5vw,2.8rem);margin:8px 0}h2{font-size:1.25rem}p{color:var(--muted);line-height:1.7}.panel{background:rgba(21,34,56,.94);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 18px 60px #0003}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}label{display:block;font-weight:650;margin:0 0 8px}input,select{width:100%;padding:13px 14px;background:#0d1728;color:var(--text);border:1px solid var(--line);border-radius:12px;font-size:1rem}input:focus,select:focus{outline:2px solid var(--accent)}button{border:0;border-radius:12px;padding:13px 18px;background:var(--accent);color:#0b1220;font-weight:800;font-size:1rem;cursor:pointer}button.secondary{background:#253650;color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.result{margin-top:20px;border:1px solid #3a5072;background:#0d1728;border-radius:16px;padding:18px}.result-number{font-size:clamp(1.8rem,6vw,3rem);font-weight:850;overflow-wrap:anywhere}.note{font-size:.91rem;border-left:3px solid var(--accent);padding-left:12px}.sub{font-size:.91rem}.warning{color:#ffdc98}.hidden{display:none!important}footer{margin-top:24px;color:var(--muted);font-size:.85rem}a{color:#b3c6ff}table{border-collapse:collapse;width:100%;font-size:.93rem}td,th{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left}th{color:#b8c9f4}code{color:#d6e1ff}details{margin-top:12px}summary{cursor:pointer;font-weight:700}
+@media(max-width:640px){main{margin:24px auto}.grid{grid-template-columns:1fr}.panel{padding:18px}.actions button{flex:1 1 45%}}
+</style>
+</head>
+<body><main>
+<header><div class="kicker">GAME TOOL LAB · FPS TOOLS</div><h1>게임 감도 변환기</h1><p>발로란트 · CS2 · 오버워치 2 · 에이펙스 레전드 · 배틀그라운드(PUBG). 같은 <strong>마우스 이동 거리(cm/360°)</strong>를 기준으로 감도를 비교합니다.</p></header>
+<section class="panel" aria-labelledby="converter"><h2 id="converter">감도 변환</h2>
+<div class="grid">
+<div><label for="from">현재 게임</label><select id="from"><option value="valorant">발로란트 (VALORANT)</option><option value="cs2">카운터 스트라이크 2 (CS2)</option><option value="overwatch">오버워치 2</option><option value="apex">에이펙스 레전드</option><option value="pubg">배틀그라운드 (PUBG) · 수동 측정</option></select></div>
+<div><label for="to">변환할 게임</label><select id="to"><option value="cs2">카운터 스트라이크 2 (CS2)</option><option value="valorant">발로란트 (VALORANT)</option><option value="overwatch">오버워치 2</option><option value="apex">에이펙스 레전드</option><option value="pubg">배틀그라운드 (PUBG) · 수동 측정</option></select></div>
+<div><label for="dpi">현재 마우스 DPI</label><input id="dpi" type="number" min="1" max="100000" step="1" value="800" inputmode="numeric"></div>
+<div><label for="targetDpi">변환할 게임의 DPI</label><input id="targetDpi" type="number" min="1" max="100000" step="1" value="800" inputmode="numeric"></div>
+<div id="sensField"><label for="sens">현재 게임 감도</label><input id="sens" type="number" min="0.000001" step="any" value="0.5" inputmode="decimal"></div>
+<div id="pubgField" class="hidden"><label for="measuredCm">PUBG에서 직접 측정한 cm/360°</label><input id="measuredCm" type="number" min="0.01" step="any" placeholder="예: 40.8" inputmode="decimal"><p class="sub">PUBG 훈련장에서 마우스를 수평으로 움직여 360° 회전에 필요한 실제 거리를 재세요.</p></div>
+</div>
+<div class="actions"><button id="calc">변환하기</button><button class="secondary" id="swap">게임 바꾸기</button><button class="secondary" id="copy" disabled>결과 복사</button></div>
+<div class="result" aria-live="polite"><div class="note" id="resultLabel">변환 결과</div><div class="result-number" id="output">—</div><p id="details">게임과 감도를 선택하고 변환하기를 누르세요.</p></div>
+</section>
+<section class="panel" style="margin-top:18px"><h2>변환 기준과 주의사항</h2><p>자동 변환은 기본 수평 회전(일반 조준, hip-fire) 기준입니다. 조준경(ADS), 배율, 시야각(FOV), 마우스 가속 및 사용자 지정 게임 설정은 별도로 계산하지 않습니다. 같은 cm/360°여도 체감이 달라질 수 있습니다.</p><table><thead><tr><th>게임</th><th>기본 yaw (°/count)</th></tr></thead><tbody><tr><td>발로란트</td><td>0.07</td></tr><tr><td>CS2</td><td>0.022</td></tr><tr><td>오버워치 2</td><td>0.0066</td></tr><tr><td>에이펙스 레전드</td><td>0.022</td></tr><tr><td>PUBG</td><td>단일 계수 미검증 — 직접 측정</td></tr></tbody></table>
+<details><summary>감도 변환 공식 보기</summary><p><code>목표 감도 = 현재 감도 × 현재 yaw × 현재 DPI ÷ (목표 yaw × 목표 DPI)</code></p><p><code>cm/360° = 914.4 ÷ (현재 yaw × 현재 감도 × 현재 DPI)</code></p></details>
+<p class="note">PUBG는 게임 설정의 일반 감도·조준 감도 등 여러 항목과 변환 방식 차이 때문에 검증되지 않은 자동 숫자를 만들지 않습니다. PUBG에서 다른 게임으로 변환할 때는 직접 측정한 cm/360°를 사용하며, PUBG로 옮길 때는 표시된 목표 cm/360°를 기준으로 훈련장에서 직접 맞추세요.</p>
+</section><footer>Game Tool Lab · 비공식 팬 제작 계산기 · 게임 개발사와 무관 · 결과는 참고용</footer>
+</main><script>
+const games={valorant:{name:'발로란트',yaw:0.07},cs2:{name:'CS2',yaw:0.022},overwatch:{name:'오버워치 2',yaw:0.0066},apex:{name:'에이펙스 레전드',yaw:0.022},pubg:{name:'배틀그라운드(PUBG)',yaw:null}};
+const el=id=>document.getElementById(id);let lastResult='';
+function fmt(n){return Number(n.toFixed(6)).toString();}
+function setResult(title,value,details,copy=''){el('resultLabel').textContent=title;el('output').textContent=value;el('details').textContent=details;lastResult=copy;el('copy').disabled=!copy;}
+function updateFields(){el('sensField').classList.toggle('hidden',el('from').value==='pubg');el('pubgField').classList.toggle('hidden',el('from').value!=='pubg');setResult('변환 결과','—','게임과 감도를 선택하고 변환하기를 누르세요.');}
+function calculate(){const from=el('from').value,to=el('to').value;const dpi=Number(el('dpi').value),targetDpi=Number(el('targetDpi').value);
+ if(!Number.isFinite(dpi)||dpi<=0||!Number.isFinite(targetDpi)||targetDpi<=0){setResult('입력 오류','DPI 확인','DPI는 0보다 큰 숫자여야 합니다.');return;}
+ let cm;if(from==='pubg'){cm=Number(el('measuredCm').value);if(!Number.isFinite(cm)||cm<=0){setResult('입력 오류','측정값 필요','PUBG에서 직접 측정한 cm/360°를 입력해 주세요.');return;}}
+ else{const sens=Number(el('sens').value);if(!Number.isFinite(sens)||sens<=0){setResult('입력 오류','감도 확인','현재 게임 감도는 0보다 큰 숫자여야 합니다.');return;}cm=914.4/(games[from].yaw*sens*dpi);}
+ if(to==='pubg'){const msg=`목표 회전 거리: ${cm.toFixed(2)} cm/360°. PUBG 훈련장에서 일반 감도를 조절하여 이 거리에 맞추세요. PUBG 감도 숫자는 자동 산출하지 않습니다.`;setResult('PUBG 수동 맞춤',`${cm.toFixed(2)} cm/360°`,msg,`${cm.toFixed(2)} cm/360°`);return;}
+ const converted=914.4/(cm*games[to].yaw*targetDpi);if(!Number.isFinite(converted)||converted<=0){setResult('계산 오류','값 확인','입력값을 다시 확인해 주세요.');return;}
+ const result=fmt(converted);setResult(`${games[to].name} 변환 감도`,result,`${games[from].name} → ${games[to].name} · 현재 DPI ${dpi} / 목표 DPI ${targetDpi} · ${cm.toFixed(2)} cm/360°`,result);
+}
+el('from').addEventListener('change',updateFields);el('to').addEventListener('change',updateFields);
+el('calc').addEventListener('click',calculate);
+el('swap').addEventListener('click',()=>{const a=el('from').value;el('from').value=el('to').value;el('to').value=a;const dpi=el('dpi').value;el('dpi').value=el('targetDpi').value;el('targetDpi').value=dpi;updateFields();});
+el('copy').addEventListener('click',async()=>{if(!lastResult)return;try{await navigator.clipboard.writeText(lastResult);el('copy').textContent='복사 완료';setTimeout(()=>el('copy').textContent='결과 복사',1300);}catch{setResult('복사 실패',lastResult,'브라우저에서 숫자를 직접 선택해 복사해 주세요.',lastResult);}});
+['sens','dpi','targetDpi','measuredCm'].forEach(id=>el(id).addEventListener('keydown',e=>{if(e.key==='Enter')calculate();}));
+updateFields();
+</script></body></html>
