@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="게임 마우스 감도 변환 참고 계산기">
+<title>Game Sens Converter</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#152238;--line:#30415b;--text:#f1f5f9;--muted:#a9b8cc;--accent:#7c9cff}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(160deg,#0b1220,#111b2e);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+main{width:min(920px,92%);margin:48px auto}
+header{margin-bottom:28px}
+.kicker{color:#9bb5ff;font-weight:700;letter-spacing:.12em;font-size:.8rem}
+h1{font-size:clamp(1.8rem,4vw,2.7rem);margin:8px 0}
+p{color:var(--muted);line-height:1.65}
+.panel{background:rgba(21,34,56,.94);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 18px 60px #0003}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+label{display:block;font-weight:650;margin:0 0 8px}
+input,select{width:100%;padding:13px 14px;background:#0d1728;color:var(--text);border:1px solid var(--line);border-radius:12px;font-size:1rem}
+input:focus,select:focus{outline:2px solid var(--accent)}
+button{border:0;border-radius:12px;padding:13px 18px;background:var(--accent);color:#0b1220;font-weight:800;font-size:1rem;cursor:pointer}
+button.secondary{background:#253650;color:var(--text);border:1px solid var(--line)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.result{margin-top:20px;border:1px solid #3a5072;background:#0d1728;border-radius:16px;padding:18px}
+.result-number{font-size:clamp(2rem,6vw,3rem);font-weight:850;letter-spacing:.02em}
+.note{font-size:.9rem;border-left:3px solid #7c9cff;padding-left:12px}
+footer{margin-top:20px;color:var(--muted);font-size:.85rem}
+@media(max-width:640px){main{margin:24px auto}.grid{grid-template-columns:1fr}.panel{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="kicker">GAME TOOL LAB · BETA</div>
+<h1>게임 감도 변환기</h1>
+<p>Valorant와 CS2 사이의 감도를 같은 마우스 회전 거리 기준으로 환산하는 참고 계산기입니다.</p>
+</header>
+<section class="panel" aria-labelledby="converter">
+<h2 id="converter">감도 변환</h2>
+<div class="grid">
+<div>
+<label for="from">현재 게임</label>
+<select id="from"><option value="valorant">Valorant</option><option value="cs2">Counter-Strike 2</option></select>
+</div>
+<div>
+<label for="to">변환할 게임</label>
+<select id="to"><option value="cs2">Counter-Strike 2</option><option value="valorant">Valorant</option></select>
+</div>
+<div>
+<label for="dpi">마우스 DPI</label>
+<input id="dpi" type="number" min="1" step="1" value="800">
+</div>
+<div>
+<label for="sens">현재 감도</label>
+<input id="sens" type="number" min="0.0001" step="any" value="0.5">
+</div>
+</div>
+<div class="actions">
+<button id="calc">변환하기</button>
+<button class="secondary" id="swap">게임 바꾸기</button>
+<button class="secondary" id="copy" disabled>결과 복사</button>
+</div>
+<div class="result" aria-live="polite">
+<div class="note">변환 결과</div>
+<div class="result-number" id="output">—</div>
+<p id="details">값을 입력하고 변환하기를 누르세요.</p>
+</div>
+</section>
+<section class="panel" style="margin-top:18px">
+<h2>사용 안내</h2>
+<p>이 도구는 게임 간 수평 회전 거리(마우스 이동 거리) 환산을 위한 근사 참고값을 제공합니다. 게임 내 설정, 시야각, 줌, 플랫폼 또는 업데이트에 따라 체감이 달라질 수 있으므로 실제 플레이에서 확인하세요.</p>
+<p class="note">DPI는 결과 설명에 표시되며, 이 기본 환산식에서는 두 게임에 동일한 DPI를 사용한다고 가정합니다. 공식 게임 API와 연결하지 않습니다.</p>
+</section>
+<footer>Game Tool Lab · 초기 테스트 버전 · 계산 결과는 참고용</footer>
+</main>
+<script>
+const el=id=>document.getElementById(id);
+let lastResult="";
+function calculate(){
+ const from=el("from").value,to=el("to").value;
+ const sens=Number(el("sens").value),dpi=Number(el("dpi").value);
+ if(from===to){el("output").textContent="게임을 다르게 선택하세요";el("details").textContent="현재 게임과 변환할 게임이 같습니다.";el("copy").disabled=true;return;}
+ if(!Number.isFinite(sens)||sens<=0||!Number.isFinite(dpi)||dpi<=0){el("output").textContent="입력값을 확인하세요";el("details").textContent="감도와 DPI는 0보다 큰 숫자여야 합니다.";el("copy").disabled=true;return;}
+ // Relative yaw constants: Valorant 0.07, CS2 0.022.
+ const yaw={valorant:0.07,cs2:0.022};
+ const converted=sens*yaw[from]/yaw[to];
+ lastResult=converted.toFixed(4).replace(/0+$/,"").replace(/\.$/,"");
+ el("output").textContent=lastResult;
+ el("details").textContent=`${from==="valorant"?"Valorant":"CS2"} ${sens} → ${to==="valorant"?"Valorant":"CS2"} ${lastResult} · DPI ${dpi} (동일 DPI 가정)`;
+ el("copy").disabled=false;
+}
+el("calc").addEventListener("click",calculate);
+el("swap").addEventListener("click",()=>{
+ const a=el("from").value,b=el("to").value;el("from").value=b;el("to").value=a;calculate();
+});
+el("copy").addEventListener("click",async()=>{
+ if(!lastResult)return;
+ try{await navigator.clipboard.writeText(lastResult);el("copy").textContent="복사 완료";setTimeout(()=>el("copy").textContent="결과 복사",1200);}
+ catch{el("copy").textContent="복사 실패";alert("브라우저에서 복사를 허용하지 않았습니다. 결과를 직접 선택해 복사하세요.");}
+});
+el("from").addEventListener("change",()=>{if(el("from").value===el("to").value)el("to").value=el("from").value==="valorant"?"cs2":"valorant";});
+el("to").addEventListener("change",()=>{if(el("from").value===el("to").value)el("from").value=el("to").value==="valorant"?"cs2":"valorant";});
+calculate();
+</script>
+</body>
+</html>
